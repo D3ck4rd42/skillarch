@@ -10,7 +10,7 @@ on:
 
 jobs:
   docker:
-    if: github.repository == 'laluka/SkillArch'
+    #if: github.repository == 'laluka/SkillArch'
     runs-on: ubuntu-latest
     steps:
       - name: Free Disk Space
@@ -76,7 +76,7 @@ jobs:
 
 
   trivy:
-    if: github.repository == 'laluka/SkillArch'
+    #if: github.repository == 'laluka/SkillArch'
     name: trivy
     runs-on: ubuntu-latest
     steps:
@@ -102,7 +102,7 @@ jobs:
           skip-files: '/home/hacker/.local/share/pipx/venvs/yt-dlp/lib/python3.13/site-packages/yt_dlp/extractor/shahid.py'
   
   gitleaks:
-    if: github.repository == 'laluka/SkillArch'
+    #if: github.repository == 'laluka/SkillArch'
     name: gitleaks
     runs-on: ubuntu-latest
     steps:
