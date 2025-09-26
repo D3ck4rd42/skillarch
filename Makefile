@@ -9,7 +9,7 @@ help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  %-18s %s\n", $$1, $$2 } /^##@/ { printf "\n%s\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 	@echo ''
 
-install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening clean ## Install SkillArch
+install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening install-deckard clean ## Install SkillArch
 	@echo "You are all set up! Enjoy ! 🌹"
 
 sanity-check:
@@ -45,6 +45,21 @@ install-base: sanity-check ## Install base packages
 	[ ! -d /DATA ] && sudo mkdir -pv /DATA && sudo chown "$$USER:$$USER" /DATA && sudo chmod 770 /DATA
 	[ ! -d /.Trash ] && sudo mkdir -pv /.Trash && sudo chown "$$USER:$$USER" /.Trash && sudo chmod 770 /.Trash && sudo chmod +t /.Trash
 	make clean
+
+
+install-deckard: sanity-check ## Install my packages
+	yes|sudo pacman -S --noconfirm -needed noto-fonts-emoji obsidian rustscan claude-code atuig playerctl libusb webkit2gtk-4.1 gtk3 copyq
+	yes|sudo pacman -S --noconfirm -needed yazi ffmpeg 7zip jq poppler fd ripgrep fzf zoxide resvg imagemagick
+
+	# Install Wally (ZSA keyboard firmware tool)
+	curl -L https://raw.githubusercontent.com/zsa/wally/master/dist/linux64/wally -o /tmp/wally
+	sudo install -m 755 /tmp/wally /usr/local/bin/wally
+	curl -L https://raw.githubusercontent.com/zsa/wally/master/dist/50-zsa.rules -o /tmp/50-zsa.rules
+	sudo install -m 644 /tmp/50-zsa.rules /etc/udev/rules.d/50-zsa.rules
+	sudo udevadm control --reload-rules && sudo udevadm trigger
+
+	# Install SuperClaude
+	# install after _ pipx install SuperClaude && pipx upgrade SuperClaude && SuperClaude install
 
 install-cli-tools: sanity-check ## Install system packages
 	yes|sudo pacman -S --noconfirm --needed base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat gnu-netcat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta viu xsv asciinema htmlq neovim glow jless websocat superfile gron exa fastfetch bat sysstat cronie
@@ -113,6 +128,7 @@ install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
 	[ ! -d ~/.config/i3 ] && mkdir -p ~/.config/i3
 	[ -f ~/.config/i3/config ] && [ ! -L ~/.config/i3/config ] && mv ~/.config/i3/config ~/.config/i3/config.skabak
 	ln -sf /opt/skillarch/config/i3/config ~/.config/i3/config
+	ln -sf /opt/skillarch/config/i3/scripts ~/.config/i3/scripts
 
 	# polybar config
 	[ ! -d ~/.config/polybar ] && mkdir -p ~/.config/polybar
@@ -120,7 +136,8 @@ install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
 	ln -sf /opt/skillarch/config/polybar/config.ini ~/.config/polybar/config.ini
 	[ -f ~/.config/polybar/launch.sh ] && [ ! -L ~/.config/polybar/launch.sh ] && mv ~/.config/polybar/launch.sh ~/.config/polybar/launch.sh.skabak
 	ln -sf /opt/skillarch/config/polybar/launch.sh ~/.config/polybar/launch.sh
-
+	ln -sf /opt/skillarch/config/polybar/scripts ~/.config/polybar/scripts
+	
 	# rofi config
 	[ ! -d ~/.config/rofi ] && mkdir -p ~/.config/rofi
 	[ -f ~/.config/rofi/config.rasi ] && [ ! -L ~/.config/rofi/config.rasi ] && mv ~/.config/rofi/config.rasi ~/.config/rofi/config.rasi.skabak

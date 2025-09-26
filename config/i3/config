@@ -24,6 +24,7 @@ font pango:monospace 8
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 exec_always --no-startup-id dex --autostart --environment i3
 exec_always --no-startup-id feh --bg-scale /opt/skillarch/assets/bg.jpg
+#exec_always S--no-startup-id xrandr --output HDMI-A-0 --primary # correct the problem of 2 polybar on the same screen for me
 exec_always --no-startup-id ~/.config/polybar/launch.sh &> /var/tmp/polybar.log
 exec_always --no-startup-id pgrep --exact VBoxService &> /dev/null && killall VBoxClient ; VBoxClient-all
 exec_always --no-startup-id bash -c "killall -q picom ; grep -qF hypervisor /proc/cpuinfo || picom"
@@ -114,43 +115,43 @@ bindsym $mod+a scratchpad show
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1 "1"
-set $ws2 "2"
-set $ws3 "3"
-set $ws4 "4"
-set $ws5 "5"
-set $ws6 "6"
+set $ws1 "1: 🎣 Main"
+set $ws2 "2: 👾 Notes"
+set $ws3 "3: 💻 Code"
+set $ws4 "4: 📗 Divers"
+set $ws5 "5: 💬 Chat"
+set $ws6 "6: 🛡️ Vpn"
 set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
 
 # switch to workspace
-bindsym $mod+ampersand workspace number $ws1
-bindsym $mod+eacute workspace number $ws2
-bindsym $mod+quotedbl workspace number $ws3
-bindsym $mod+apostrophe workspace number $ws4
-bindsym $mod+parenleft workspace number $ws5
-bindsym $mod+minus workspace number $ws6
-bindsym $mod+egrave workspace number $ws7
-bindsym $mod+underscore workspace number $ws8
-bindsym $mod+ccedilla workspace number $ws9
-bindsym $mod+agrave workspace number $ws10
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace number $ws1
-bindsym $mod+Shift+eacute move container to workspace number $ws2
+bindsym $mod+Shift+2 move container to workspace number $ws2
 bindsym $mod+Shift+3 move container to workspace number $ws3
 bindsym $mod+Shift+4 move container to workspace number $ws4
 bindsym $mod+Shift+5 move container to workspace number $ws5
 bindsym $mod+Shift+6 move container to workspace number $ws6
-bindsym $mod+Shift+egrave move container to workspace number $ws7
+bindsym $mod+Shift+7 move container to workspace number $ws7
 bindsym $mod+Shift+8 move container to workspace number $ws8
-bindsym $mod+Shift+ccedilla move container to workspace number $ws9
-bindsym $mod+Shift+agrave move container to workspace number $ws10
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
 
 # reload the configuration file
-bindsym $mod+Shift+c reload
+#bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
@@ -174,6 +175,7 @@ bindsym $mod+r mode "resize"
 # Gaps
 gaps inner 5
 gaps outer 0
+
 
 bindsym $mod+p exec flameshot gui
 bindsym $mod+Shift+p exec flameshot full -p ~/Pictures/
@@ -210,10 +212,27 @@ for_window [title="^Settings$"] floating enable
 for_window [title="^Bluetooth Devices$"] floating enable
 for_window [title="^Volume Control$"] floating enable
 
-# Add new rules for floating windows
-for_window [floating] resize set 1536 864, resize set 1536 864, move position 192 108
 
 # HELP
 bindsym $mod+h exec kitty --title "Help: SkillArch Bindings" zsh -ic "ska-help-bindings"
 bindsym $mod+Shift+h exec kitty --title "Help: SkillArch Aliases" zsh -ic "ska-help-aliases"
 bindsym $mod+Control+h exec kitty --title "Help: SkillArch packages" zsh -ic "ska-help-packages"
+
+
+# Decard config
+# Start apps at startup
+
+exec --no-startup-id obsidian
+exec --no-startup-id code
+exec --no-startup-id discord
+exec --no-startup-id kitty
+exec --no-startup-id google-chrome-stable
+exec --no-startup-id copyq
+
+
+assign [class="Google-chrome"] $ws1
+assign [class="discord"] $ws5
+assign [class="obsidian"] $ws2
+assign [class="Code"] $ws3
+
+bindsym $mod+Shift+w exec --no-startup-id /opt/skillarch/config/i3/scripts/toggle_spacer.sh
